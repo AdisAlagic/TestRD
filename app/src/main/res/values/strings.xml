@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">TestFoodies</string>
+    <string name="filters_str">Filters</string>
+    <string name="foodies_logo">Foodies</string>
+    <string name="search_icon">Search</string>
+    <string name="placeholder_search">Find a dish</string>
+    <string name="erase_hint">Clear search field</string>
+
+</resources>

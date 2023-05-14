@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TestFoodies</string>
+    <string name="filters_str">Фильры</string>
+    <string name="foodies_logo">Фудисс</string>
+    <string name="search_icon">Поиск</string>
+    <string name="placeholder_search">Найти блюдо</string>
+    <string name="erase_hint">Очистить поле поиска</string>
+</resources>
