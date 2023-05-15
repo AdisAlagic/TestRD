@@ -14,7 +14,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.rememberNavController
 import com.adisalagic.testfoodies.ui.components.AppBarTitle
+import com.adisalagic.testfoodies.ui.navigation.NavigationGraph
 import com.adisalagic.testfoodies.ui.theme.TestFoodiesTheme
 import com.adisalagic.testfoodies.utils.initUtils
 
@@ -23,6 +26,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val navHostController = rememberNavController()
             initUtils()
             TestFoodiesTheme {
                 Scaffold(
@@ -33,7 +37,7 @@ class MainActivity : ComponentActivity() {
                     }
                 ) {
                     Box(modifier = Modifier.padding(it)) {
-
+                        NavigationGraph(navHostController = navHostController)
                     }
                 }
             }

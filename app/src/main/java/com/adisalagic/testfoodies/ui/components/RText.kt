@@ -15,6 +15,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import com.adisalagic.testfoodies.ui.theme.RobotoFont
+import com.adisalagic.testfoodies.utils.colors
 
 /**
  * Base text component, that uses Roboto font
@@ -23,7 +24,7 @@ import com.adisalagic.testfoodies.ui.theme.RobotoFont
 fun RText(
     text: String,
     modifier: Modifier = Modifier,
-    color: Color = Color.Unspecified,
+    color: Color = colors.onSurface,
     fontSize: TextUnit = TextUnit.Unspecified,
     fontStyle: FontStyle? = null,
     fontWeight: FontWeight? = null,

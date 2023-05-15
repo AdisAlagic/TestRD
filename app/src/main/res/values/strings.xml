@@ -5,5 +5,10 @@
     <string name="search_icon">Search</string>
     <string name="placeholder_search">Find a dish</string>
     <string name="erase_hint">Clear search field</string>
+    <string name="ioe">There was a problem with the network</string>
+    <string name="iae">The server didn\'t return anything.</string>
+    <string name="ue">We don\'t know what happend. Please, try again</string>
+    <string name="error_occurred">An error has occurred!</string>
+    <string name="k">Okay</string>
 
 </resources>

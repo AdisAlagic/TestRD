@@ -1,6 +1,7 @@
 package com.adisalagic.testfoodies.network
 
 import android.content.Context
+import android.graphics.Bitmap
 import com.adisalagic.testfoodies.R
 import com.adisalagic.testfoodies.network.objects.Categories
 import com.adisalagic.testfoodies.network.objects.Products
@@ -12,38 +13,69 @@ import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import okhttp3.mockwebserver.RecordedRequest
+import java.util.concurrent.Executors
 
 class ApiNotRealImpl(val context: Context) : Api {
     private val mockWebServer = MockWebServer()
     private val client = OkHttpClient()
-    private val url = "http://foodies.com/api"
+    private var url = "http://foodies.com/api"
     private val gson = Gson()
 
     init {
-        mockWebServer.url(url)
+        url = mockWebServer.url("/").redact()
         val dis = object : Dispatcher() {
             override fun dispatch(request: RecordedRequest): MockResponse {
                 val response = when (request.path) {
-                    "/categories" -> getRawJson(R.raw.Categories)
-                    "/tags" -> getRawJson(R.raw.Tags)
-                    "/products" -> getRawJson(R.raw.Products)
+                    "/categories" -> getRawJson(R.raw.categories)
+                    "/tags" -> getRawJson(R.raw.tags)
+                    "/products" -> getRawJson(R.raw.products)
+                    "/images/1.png" -> getRawJson(R.raw.dish)
                     else -> {
                         return MockResponse().setResponseCode(404)
                     }
                 }
                 return MockResponse().apply {
-                    this.setBody(response)
+                    this.setBody(response.toString())
                     this.http2ErrorCode = 200
                 }
             }
         }
         mockWebServer.dispatcher = dis
-        mockWebServer.start(8000)
+        Executors.newSingleThreadExecutor().execute {
+            mockWebServer.start(8000)
+        }
     }
 
+    /**
+     * In real-life situation we would use `Picasso` or `Glide`.
+     * There are easy to use and caches images. Also async.
+     * This is the simple implementation of getting file from api.
+     */
+    private fun getImage(imageName: String): Result<ByteArray> {
+        val request = Request.Builder()
+            .get()
+            .url("$url/images/$imageName")
+            .build()
+        val call = client.newCall(request)
+        try {
+            call.execute().use {
+                val body = it.body?.bytes()
+                if (body != null) {
+                    return Result.success(body)
+                }
+                return Result.failure(IllegalArgumentException("Empty body"))
+            }
+        } catch (e: Exception) {
+            return Result.failure(e)
+        }
+    }
 
     private fun getRawJson(id: Int): String {
-        return String(context.resources.openRawResource(id).readBytes())
+        var result: String
+        context.resources.openRawResource(id).use {
+            result = String(it.readBytes())
+        }
+        return result
     }
 
     override fun getCategories(): Result<Categories> {
@@ -58,7 +90,7 @@ class ApiNotRealImpl(val context: Context) : Api {
                 if (body != null) {
                     return Result.success(gson.fromJson(body, Categories::class.java))
                 }
-                return Result.failure(Exception("Empty body"))
+                return Result.failure(IllegalArgumentException("Empty body"))
             }
         } catch (e: Exception) {
             return Result.failure(e)
@@ -77,7 +109,7 @@ class ApiNotRealImpl(val context: Context) : Api {
                 if (body != null) {
                     return Result.success(gson.fromJson(body, Tags::class.java))
                 }
-                return Result.failure(Exception("Empty body"))
+                return Result.failure(IllegalArgumentException("Empty body"))
             }
         } catch (e: Exception) {
             return Result.failure(e)
@@ -96,10 +128,12 @@ class ApiNotRealImpl(val context: Context) : Api {
                 if (body != null) {
                     return Result.success(gson.fromJson(body, Products::class.java))
                 }
-                return Result.failure(Exception("Empty body"))
+                return Result.failure(IllegalArgumentException("Empty body"))
             }
         } catch (e: Exception) {
             return Result.failure(e)
         }
     }
+
+
 }

@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.adisalagic.testfoodies.ui.routes.Home
 
 @Composable
 fun NavigationGraph(navHostController: NavHostController) {
@@ -12,7 +13,7 @@ fun NavigationGraph(navHostController: NavHostController) {
         startDestination = NavigationRoute.Home.route
     ) {
         composable(NavigationRoute.Home.route) {
-
+            Home()
         }
         composable(NavigationRoute.Bucket.route) {
 

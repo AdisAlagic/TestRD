@@ -6,4 +6,9 @@
     <string name="search_icon">Поиск</string>
     <string name="placeholder_search">Найти блюдо</string>
     <string name="erase_hint">Очистить поле поиска</string>
+    <string name="ioe">"Произошла проблема с сетью "</string>
+    <string name="iae">Сервер ничего не вернул.</string>
+    <string name="ue">Мне не знаем что произошло. Пожалуйста, повторите попытку</string>
+    <string name="error_occurred">Произошла ошибка!</string>
+    <string name="k">Окей</string>
 </resources>
