@@ -10,5 +10,6 @@
     <string name="ue">We don\'t know what happend. Please, try again</string>
     <string name="error_occurred">An error has occurred!</string>
     <string name="k">Okay</string>
+    <string name="preview">Preview of the dish</string>
 
 </resources>

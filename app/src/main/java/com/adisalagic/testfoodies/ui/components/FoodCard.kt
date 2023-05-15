@@ -1,39 +1,92 @@
 package com.adisalagic.testfoodies.ui.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.adisalagic.testfoodies.R
 import com.adisalagic.testfoodies.network.objects.Products
+import com.adisalagic.testfoodies.ui.theme.ColorBackgroundCard
+import com.adisalagic.testfoodies.ui.theme.ColorOldPrice
 import com.adisalagic.testfoodies.ui.theme.StandardRoundedCorner
 import com.adisalagic.testfoodies.utils.colors
+import com.adisalagic.testfoodies.utils.toBitmap
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FoodCard(productsItem: Products.ProductsItem, image: ByteArray, onCardClick: (Int) -> Unit) {
+fun FoodCard(
+    productsItem: Products.ProductsItem,
+    image: ByteArray,
+    onCardClick: (Int) -> Unit,
+    onPriceClicked: (Int) -> Unit,
+) {
     Card(
+        modifier = Modifier.fillMaxSize(0.4f),
         shape = StandardRoundedCorner,
         onClick = { onCardClick(productsItem.id) },
         colors = CardDefaults.cardColors(
-            containerColor = colors.background,
+            containerColor = ColorBackgroundCard,
             contentColor = colors.onSurface
         )
     ) {
         Box(
-            modifier = Modifier.padding(10.dp)
+            modifier = Modifier
+                .padding(10.dp)
+                .fillMaxSize()
         ) {
-            Row() { //Tags
-
+            Column {
+                Box {
+                    LazyRow( //Tags
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(5.dp),
+                        userScrollEnabled = false
+                    ) {
+                        items(productsItem.tagIds) {
+                            Tag(id = it)
+                        }
+                    }
+                    Image(
+                        bitmap = image.toBitmap(LocalContext.current.resources).asImageBitmap(),
+                        modifier = Modifier.fillMaxWidth(),
+                        contentScale = ContentScale.FillHeight,
+                        contentDescription = stringResource(
+                            id = R.string.preview
+                        )
+                    )
+                }
+                RText(text = productsItem.name, fontSize = 18.sp)
+                Spacer(modifier = Modifier.height(5.dp))
+                RText(text = "${productsItem.measure} ${productsItem.measureUnit}")
+                Spacer(modifier = Modifier.height(5.dp))
+                CenteredButton(
+                    price = productsItem.priceCurrent,
+                    oldPrice = productsItem.priceOld,
+                    onPriceClicked = onPriceClicked
+                )
             }
         }
     }
@@ -51,6 +104,27 @@ private fun Tag(id: Int) {
         Image(
             painter = painterResource(id = contentId),
             contentDescription = ""
+        )
+    }
+}
+
+@Composable
+private fun CenteredButton(price: Int, oldPrice: Int? = null, onPriceClicked: (Int) -> Unit) {
+    TextButton(
+        modifier = Modifier.fillMaxWidth(),
+        onClick = { onPriceClicked(price) },
+        colors = ButtonDefaults.buttonColors(
+            containerColor = colors.background,
+        )
+    ) {
+        RText(text = "$price ₽", fontWeight = FontWeight.Bold)
+        if (oldPrice == null) {
+            return@TextButton
+        }
+        RText(
+            text = "$oldPrice ₽",
+            color = ColorOldPrice,
+            textDecoration = TextDecoration.LineThrough
         )
     }
 }

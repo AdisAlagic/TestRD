@@ -11,4 +11,5 @@
     <string name="ue">Мне не знаем что произошло. Пожалуйста, повторите попытку</string>
     <string name="error_occurred">Произошла ошибка!</string>
     <string name="k">Окей</string>
+    <string name="preview">Предпросмотр блюда</string>
 </resources>
