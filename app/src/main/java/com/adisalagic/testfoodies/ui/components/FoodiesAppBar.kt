@@ -142,7 +142,10 @@ private fun SearchAppBar(onBackClick: () -> Unit, onSearch: (String) -> Unit) {
                     enter = fadeIn(),
                     exit = fadeOut()
                 ) {
-                    IconButton(onClick = { searchPhrase = "" }) {
+                    IconButton(onClick = {
+                        searchPhrase = ""
+                        onSearch("")
+                    }) {
                         Icon(
                             painter = painterResource(id = R.drawable.iconerase),
                             contentDescription = stringResource(

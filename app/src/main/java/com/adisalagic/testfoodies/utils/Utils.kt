@@ -1,11 +1,10 @@
 package com.adisalagic.testfoodies.utils
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -22,6 +21,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
+import androidx.lifecycle.ViewModelStoreOwner
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import com.adisalagic.testfoodies.network.Api
 import com.adisalagic.testfoodies.network.ApiNotRealImpl
 import com.adisalagic.testfoodies.ui.theme.getColors
@@ -29,6 +30,8 @@ import com.adisalagic.testfoodies.ui.theme.getColors
 lateinit var localDensity: Density
 lateinit var api: Api
 lateinit var colors: ColorScheme
+lateinit var viewModelStore: ViewModelStoreOwner
+lateinit var applicationContext: Context
 
 /**
  * Get composable-only vars for non-composable use
@@ -39,6 +42,8 @@ fun initUtils() {
     localDensity = LocalDensity.current
     api = ApiNotRealImpl(LocalContext.current)
     colors = getColors()
+    applicationContext = LocalContext.current.applicationContext
+    viewModelStore = LocalViewModelStoreOwner.current!!
 }
 
 @Composable
@@ -95,8 +100,8 @@ fun RowCentered(
     )
 }
 
-fun ByteArray.toBitmap(res: Resources): Bitmap {
-    return BitmapDrawable(res, BitmapFactory.decodeByteArray(this, 0, this.size)).bitmap
+fun ByteArray.toBitmap(): Bitmap {
+    return BitmapFactory.decodeByteArray(this, 0, size)
 }
 
 val Int.px: Dp

@@ -35,7 +35,7 @@ import com.adisalagic.testfoodies.utils.initUtils
 import okio.IOException
 
 @Composable
-fun ErrorDialog(e: Exception, onDismissListener: () -> Unit) {
+fun ErrorDialog(e: Throwable, onDismissListener: () -> Unit) {
     Dialog(onDismissRequest = onDismissListener) {
         Box(modifier = Modifier
             .heightIn(max = 150.dp)
@@ -84,7 +84,7 @@ fun ErrorDialogPrev() {
 }
 
 @Composable
-private fun getReason(e: Exception): String {
+private fun getReason(e: Throwable): String {
     return when (e) {
         is IOException -> stringResource(id = R.string.ioe)
         is IllegalArgumentException -> stringResource(id = R.string.iae)

@@ -4,11 +4,14 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ButtonDefaults
@@ -26,8 +29,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.adisalagic.testfoodies.R
 import com.adisalagic.testfoodies.network.objects.Products
 import com.adisalagic.testfoodies.ui.theme.ColorBackgroundCard
@@ -40,12 +45,15 @@ import com.adisalagic.testfoodies.utils.toBitmap
 @Composable
 fun FoodCard(
     productsItem: Products.ProductsItem,
-    image: ByteArray,
+    image: String,
     onCardClick: (Int) -> Unit,
+    height: Dp = Dp.Unspecified,
     onPriceClicked: (Int) -> Unit,
 ) {
     Card(
-        modifier = Modifier.fillMaxSize(0.4f),
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(max = 370.dp),
         shape = StandardRoundedCorner,
         onClick = { onCardClick(productsItem.id) },
         colors = CardDefaults.cardColors(
@@ -69,10 +77,10 @@ fun FoodCard(
                             Tag(id = it)
                         }
                     }
-                    Image(
-                        bitmap = image.toBitmap(LocalContext.current.resources).asImageBitmap(),
+                    AsyncImage(
+                        model = image,
                         modifier = Modifier.fillMaxWidth(),
-                        contentScale = ContentScale.FillHeight,
+                        contentScale = ContentScale.FillWidth,
                         contentDescription = stringResource(
                             id = R.string.preview
                         )
@@ -82,11 +90,16 @@ fun FoodCard(
                 Spacer(modifier = Modifier.height(5.dp))
                 RText(text = "${productsItem.measure} ${productsItem.measureUnit}")
                 Spacer(modifier = Modifier.height(5.dp))
-                CenteredButton(
-                    price = productsItem.priceCurrent,
-                    oldPrice = productsItem.priceOld,
-                    onPriceClicked = onPriceClicked
-                )
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.BottomCenter
+                ) {
+                    CenteredButton(
+                        price = productsItem.priceCurrent,
+                        oldPrice = productsItem.priceOld,
+                        onPriceClicked = onPriceClicked
+                    )
+                }
             }
         }
     }
@@ -121,6 +134,7 @@ private fun CenteredButton(price: Int, oldPrice: Int? = null, onPriceClicked: (I
         if (oldPrice == null) {
             return@TextButton
         }
+        Spacer(modifier = Modifier.width(10.dp))
         RText(
             text = "$oldPrice ₽",
             color = ColorOldPrice,

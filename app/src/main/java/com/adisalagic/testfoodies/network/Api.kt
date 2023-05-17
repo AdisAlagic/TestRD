@@ -8,4 +8,5 @@ interface Api {
     fun getCategories(): Result<Categories>
     fun getTags(): Result<Tags>
     fun getProducts(): Result<Products>
+    fun getImage(imageName: String): Result<ByteArray>
 }
