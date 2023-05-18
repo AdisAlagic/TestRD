@@ -25,6 +25,9 @@ import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import com.adisalagic.testfoodies.network.Api
 import com.adisalagic.testfoodies.network.ApiNotRealImpl
+import com.adisalagic.testfoodies.network.objects.Categories
+import com.adisalagic.testfoodies.network.objects.Products
+import com.adisalagic.testfoodies.ui.components.TabInfo
 import com.adisalagic.testfoodies.ui.theme.getColors
 
 lateinit var localDensity: Density
@@ -112,3 +115,22 @@ val Int.px: Dp
         }
         return result
     }
+
+fun Categories.toTabsList(isActive:(Int) -> Boolean, onTabClicked: (Int) -> Unit): List<TabInfo> {
+    val list = mutableListOf<TabInfo>()
+    this.forEach {
+        list.add(
+            TabInfo(
+                it.name,
+                isActive(it.id),
+                categoryId = it.id,
+                onTabClicked = onTabClicked
+            )
+        )
+    }
+    return list
+}
+
+fun List<Products.ProductsItem>.asProducts(): Products {
+    return Products().apply { addAll(this@asProducts) }
+}

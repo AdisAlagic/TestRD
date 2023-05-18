@@ -2,9 +2,11 @@ package com.adisalagic.testfoodies.ui.routes
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -26,7 +28,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.adisalagic.testfoodies.network.objects.Products
 import com.adisalagic.testfoodies.ui.components.ErrorDialog
 import com.adisalagic.testfoodies.ui.components.FoodCard
+import com.adisalagic.testfoodies.ui.components.FoodiesTabNavigator
 import com.adisalagic.testfoodies.ui.viewmodels.HomeViewModel
+import com.adisalagic.testfoodies.utils.toTabsList
 import com.adisalagic.testfoodies.utils.viewModelStore
 import kotlinx.coroutines.flow.StateFlow
 
@@ -51,32 +55,42 @@ fun Home() {
             refresh()
         }
     }
-    Box(modifier = Modifier
-        .pullRefresh(refreshState)
-        .fillMaxSize()) {
-        LazyVerticalGrid(
-            columns = GridCells.Adaptive(200.dp),
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            items(state.getFilters()) {
-                FoodCard(
-                    productsItem = it,
-                    height = 330.dp,
-                    image = model.getImage(it.image),
-                    onCardClick = {
-
-                    },
+    Box(modifier = Modifier.fillMaxSize().pullRefresh(refreshState)) {
+        Column {
+            FoodiesTabNavigator(tabInfos = state.categories.toTabsList({
+                return@toTabsList it == uiState.activeId
+            }) {
+                model.setActiveTab(id = it)
+            })
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+            ) {
+                LazyVerticalGrid(
+                    columns = GridCells.Adaptive(200.dp),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
+                    items(state.getFilters()) {
+                        FoodCard(
+                            productsItem = it,
+                            height = 330.dp,
+                            image = model.getImage(it.image),
+                            onCardClick = {
 
+                            },
+                        ) {
+
+                        }
+                    }
                 }
+                PullRefreshIndicator(
+                    refreshing = uiState.isRefreshing,
+                    state = refreshState,
+                    modifier = Modifier.align(Alignment.TopCenter).offset(y = (-100).dp)
+                )
             }
         }
-        PullRefreshIndicator(
-            refreshing = uiState.isRefreshing,
-            state = refreshState,
-            modifier = Modifier.align(Alignment.TopCenter)
-        )
     }
 }
 
@@ -87,6 +101,10 @@ private fun refresh() {
         model.updateErrorState(true)
     }
     model.getTags {
+        model.updateRefreshState(false)
+        model.updateErrorState(true)
+    }
+    model.getCategories {
         model.updateRefreshState(false)
         model.updateErrorState(true)
     }
